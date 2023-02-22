@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.annotation.StringRes
+import com.kamilkirstein.goequiz.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var trueButton : Button
-    private lateinit var falseButton : Button
-    private lateinit var nextButton : Button
+    // using viewBinding
+    private lateinit var binding : ActivityMainBinding
+
 
     // create the List of Questions we will use in our app
 
@@ -27,29 +29,47 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        trueButton = findViewById(R.id.true_button)
-        falseButton = findViewById(R.id.false_button)
-        nextButton = findViewById(R.id.next_button)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // set Listeners:
-        trueButton.setOnClickListener { view : View ->
-            // do something
-            Toast.makeText(
-                this,
-                R.string.correct_toast,
-                Toast.LENGTH_SHORT
-            ).show()
+        binding.trueButton.setOnClickListener { _ : View ->
+            checkAnswer(true)
         }
 
-        falseButton.setOnClickListener { view : View ->
-            //do something
-            Toast.makeText(
-                this,
-                R.string.incorrect_toast,
-                Toast.LENGTH_SHORT
-            ).show()
+        binding.falseButton.setOnClickListener { _ : View ->
+            checkAnswer(false)
         }
+
+        binding.nextButton.setOnClickListener { _ : View ->
+            currentIndex = ((currentIndex + 1) % questionBank.size)
+            updateQuestion()
+        }
+
+        binding.prevButton.setOnClickListener { _ : View ->
+            currentIndex = Math.floorMod(currentIndex - 1, questionBank.size)
+            updateQuestion()
+        }
+        // get the  question for the text view from questionBank
+        updateQuestion()
     }
+
+    private fun updateQuestion() {
+        binding.questionTextView.setText(questionBank[currentIndex].textResId)
+    }
+    private fun checkAnswer(userAnswer : Boolean)
+    {
+        @StringRes val stringResForToast : Int = if (userAnswer == questionBank[currentIndex].answer) {
+            R.string.correct_toast
+        } else {
+            R.string.incorrect_toast
+        }
+
+        Toast.makeText(
+            this,
+            stringResForToast,
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
 }
