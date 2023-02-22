@@ -10,6 +10,20 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var trueButton : Button
     private lateinit var falseButton : Button
+    private lateinit var nextButton : Button
+
+    // create the List of Questions we will use in our app
+
+    private val questionBank = listOf(
+        Question(R.string.question_australia, true),
+        Question(R.string.question_asia, true),
+        Question(R.string.question_oceans, true),
+        Question(R.string.question_mideast, false),
+        Question(R.string.question_africa, false),
+        Question(R.string.question_americas, true)
+    )
+
+    private var currentIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,6 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         trueButton = findViewById(R.id.true_button)
         falseButton = findViewById(R.id.false_button)
+        nextButton = findViewById(R.id.next_button)
 
         // set Listeners:
         trueButton.setOnClickListener { view : View ->
